@@ -21,18 +21,25 @@ int vaga1 = 31;
 int vaga2 = 33;
 int vaga3 = 35;
 int vaga4 = 37;
+
+int ledvaga1 = 30;
+int ledvaga2 = 32;
+int ledvaga3 = 34;
+int ledvaga4 = 36;
+
+//Declação do LED das vagas
+
 //Vetor com o texto das vagas
 int vagas[6] = {0, vaga1, vaga2, vaga3, vaga4};
+int ledvagas[6] = {0, ledvaga1, ledvaga2, ledvaga3, ledvaga4};
 char* texto[] = {"0", "vaga1", "vaga2", "vaga3", "vaga4"};
 
 int vagaslivres;
 
 StaticJsonBuffer<200> jsonBuffer;
-JsonObject& root = jsonBuffer.createObject();
+JsonObject& vagajson = jsonBuffer.createObject();
 
 void setup() {
-
-
 
   Ethernet.begin(mac, ip); //Inicializa o MAC e IP
   server.begin();
@@ -45,6 +52,12 @@ void setup() {
   pinMode(vaga2, INPUT);
   pinMode(vaga3, INPUT);
   pinMode(vaga4, INPUT);
+
+  pinMode(ledvaga1, OUTPUT);
+  pinMode(ledvaga2, OUTPUT);
+  pinMode(ledvaga3, OUTPUT);
+  pinMode(ledvaga4, OUTPUT);
+
   pinMode(39,INPUT);
 
   lcd.begin (16,2);
@@ -56,21 +69,25 @@ void loop() {
 
 //o loop se encarrega de zerar todas as vagas, então o loop irá contar quantas livres
   vagaslivres=0;
-  
-//for para contar vagas livres  
+
+//for para contar vagas livres
   for (int i = 1; i <= 4; i++) {
     if (digitalRead(vagas[i]) == LOW)  {
       // Estado da vaga (Ocupada)
-      root[texto[i]] = false;
+      vagajson[texto[i]] = false;
+      digitalWrite(ledvagas[i],LOW);
     }
     else  {
       // Estado da vaga (Livre)
-      root[texto[i]] = true;
+      vagajson[texto[i]] = true;
+      digitalWrite(ledvagas[i],HIGH);
       vagaslivres++;
     }//fim se
     delay(50);
   }//fim for
-  Serial.println();
+  //Serial.println();
+
+
 
   lcd.setBacklight(HIGH);
   lcd.setCursor(0,0);
@@ -98,8 +115,8 @@ void loop() {
           client.println("Connection: close");  // the connection will be closed after completion of the response
           //client.println("Refresh: 10");  //REFRESH
           client.println();
-          
-          root.printTo(client); //Escreve o retorno JSON
+
+          vagajson.printTo(client); //Escreve o retorno JSON
 
           break;
         }//fim se c == '\n'
