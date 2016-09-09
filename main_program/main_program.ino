@@ -34,7 +34,8 @@ int vagas[6] = {0, vaga1, vaga2, vaga3, vaga4};
 int ledvagas[6] = {0, ledvaga1, ledvaga2, ledvaga3, ledvaga4};
 char* texto[] = {"0", "vaga1", "vaga2", "vaga3", "vaga4"};
 
-int vagaslivres;
+int vagaslivres_setorA;
+int vagaslivres_setorB;
 
 StaticJsonBuffer<200> jsonBuffer;
 JsonObject& vagajson = jsonBuffer.createObject();
@@ -68,7 +69,8 @@ void setup() {
 void loop() {
 
 //o loop se encarrega de zerar todas as vagas, então o loop irá contar quantas livres
-  vagaslivres=0;
+  vagaslivres_setorA=0;
+  vagaslivres_setorB=0;
 
 //for para contar vagas livres
   for (int i = 1; i <= 4; i++) {
@@ -81,7 +83,10 @@ void loop() {
       // Estado da vaga (Livre)
       vagajson[texto[i]] = true;
       digitalWrite(ledvagas[i],HIGH);
-      vagaslivres++;
+      if((i==1)||(i==2)) //Checa a qual vaga pertence o sensor
+        vagaslivres_setorA++;
+      else
+        vagaslivres_setorB++;
     }//fim se
     delay(50);
   }//fim for
@@ -91,8 +96,12 @@ void loop() {
 
   lcd.setBacklight(HIGH);
   lcd.setCursor(0,0);
-  lcd.print("Vagas livres: ");
-  lcd.print(vagaslivres);
+  lcd.print("<--- Setor A:");
+  lcd.print(vagaslivres_setorA);
+  lcd.setCursor(0,1);
+  lcd.print("---> Setor B:");
+  lcd.print(vagaslivres_setorB);
+  lcd.print("");
 
   // Aguarda a conexão do cliente
   EthernetClient client = server.available();
