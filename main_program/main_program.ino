@@ -8,7 +8,7 @@
 #include <Wire.h> //LCD
 #include <LiquidCrystal_I2C.h> //LCD
 
-// Inicializa o display no endereco 0x3F
+// Inicializa o display no  0x3F
 LiquidCrystal_I2C lcd(0x3F, 2, 1, 0, 4, 5, 6, 7, 3, POSITIVE);
 
 byte mac[] = {0xDE, 0xAD, 0xBE, 0xEF, 0xFA, 0xDE}; //Define o Mac para EthernetShield
